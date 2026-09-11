@@ -21,7 +21,7 @@ transaccion ES struct<
     >
     
 usuario ES struct <
-     millasTotales: R
+    millasTotales: R
     millasDisponibles: R
     millasCanjeadas: R 
     historialVuelos: seq<vuelo>
@@ -37,12 +37,15 @@ usuario ES struct <
     pred estaRegistrado(d:dicc<id,usuario>,id_usuario:Z) {id_usuario pertenece d }
     aux factorCategoria(u:usuario): R = ifThenElse(u.millasTotales<10000, 1 ,ifThenElse(u.millasTotales <50000, 3/2 ,ifThenElse(u.millasTotales<1000000, 2 ,0)))
 
-    aux nuevoUsuario(): usuario = (millasTotales: 0 , u.millasDisponibles : 0, u.millasCanjeadas: 0,historialVuelos: <>, historialTransacciones: <>)
+    aux nuevoUsuario(): usuario = (millasTotales: 0 , millasDisponibles : 0, millasCanjeadas: 0,historialVuelos: <>, historialTransacciones: <>)
+    aux facotrNoPromo():promocion = (factor: 1,tope: 0,gastadas:0)
+
+
 
     crearSistema(): AirMiles // 
         requiere: {true}
         asegura: {res.usuarios = {}}
-        asegura: {res.promociones = setKey({},'NoPromo', (factor:1,tope:0,gastadas:0) )} 
+        asegura: {res.promociones = setKey({},'NoPromo', facotrNoPromo() )} 
         
 
     //listo
@@ -86,15 +89,26 @@ usuario ES struct <
         historialTransacciones: u.historialTransacciones
     )
 
+    aux MillasGanadasMasMillasGastadas (u:usuario, distancia:R,p:promocion): R = millasGanadasEnVuelo(u,distancia,p) + p.gastadas
+    
+
     acumularMillas(inout a: AirMiles, in id_usuario: Z, in distancia: R, in nombrePromo: String)
         requiere: {a0 = a}
         requiere: {estaRegistrado(a.usuarios, id_usuario)}
         requiere: {distancia > 0}
         requiere: {nombrePromo in claves(a0.promociones)} 
-        requiere : {(a0.promociones[nombrePromo].tope >= 0  Y (millasGanadasEnVuelo(a0, id_usuario, distancia, nombrePromo) + a0.promociones[nombrePromo].gastadas)  =< a0.promociones[nombrePromo].tope)} 
+        requiere {(a0.promociones[nombrePromo].tope >= 0  Y MillasGanadasMasMillasGastadas(a.usuarios[id_usuario],distancia,a.usuarios[nombrePromo])}
+        
+        //ver requiere : {(a0.promociones[nombrePromo].tope >= 0  Y (millasGanadasEnVuelo(a.usuarios[id_usuario], distancia, a.usuarios[nombrePromo]) + a0.promociones[nombrePromo].gastadas)  =< a0.promociones[nombrePromo].tope)} 
         
         asegura : {a.usuario=setKey(a0.usuario, id_usuario, actualizarAcumularMillas(a0.usuario[id_usuario],distancia,a0.promocion[nombrePromo],nombrePromo))}
-        asegura: {ifThenElse(a0.promociones.tope = a0.promociones.gastadas + millasGanadasEnVuelo(a0, id_usuario, distancia, nombrePromo), // que pasa si tope ->  0(no tiene tope) = 0(no tiene gastadas) + 0 (esPlatino) 
+        asegura : {ifThenElse(a0.promociones.tope = MillasGanadasMasMillasGastadas(a0.usuarios[id_usuario],distancia,a0.usuarios[nombrePromo]) Y  a0.promociones.tope > 0 , // que pasa si tope ->  0(no tiene tope) = 0(no tiene gastadas) + 0 (esPlatino) 
+                a.promociones = delKey(a0.promociones,nombrePromo),     
+                a.promociones = setKey(a0.promociones, nombrePromo, gastadas + millasGanadasEnVuelo(a0, id_usuario, distancia, nombrePromo))
+            )
+        }
+        
+        //ver asegura: {ifThenElse(a0.promociones.tope = a0.promociones.gastadas + millasGanadasEnVuelo(a0.usuarios[id_usuario], distancia, a0.usuarios[nombrePromo]) Y  a0.promociones.tope != 0 , // que pasa si tope ->  0(no tiene tope) = 0(no tiene gastadas) + 0 (esPlatino) 
                 a.promociones = delKey(a0.promociones,nombrePromo),     
                 a.promociones = setKey(a0.promociones, nombrePromo, gastadas + millasGanadasEnVuelo(a0, id_usuario, distancia, nombrePromo))
             )} 
@@ -161,11 +175,11 @@ usuario ES struct <
     pred esPlatino(millas: Z) {millas >= 1000000}
 
     //listo
-    rankingMillas (in a: AirMiles, in cant_ids: Z): seq<Id> // problema con rango de i
+    rankingMillas (in a: AirMiles, in cant_ids: Z): seq<Id> 
         requiere: {cant_ids > 0}
         asegura: {ifThenElse(Z > |a.usuarios|, |res| = |a.usuarios|, |res| = cant_ids) y PerteneceSeq(res,claves(a.usuario)) }
         asegura: {para todo 0 <= i < |res|-1 ->luego a.usuarios[res[i]].millasDisponibles >= a.usuarios[res[i+1]].millasDisponibles}
-        asegura: {(para todo i : Id) i E a.usuarios Y i !E res ->L res[|res|-1] > a.usuarios[i]  ---> !!!!!!!! STRUCT NO ES ID> STRUC????} //se fija que sean los mejores
+        asegura: {(para todo i : Id) i E a.usuarios Y i !E res ->L a.usuarios[res[|res|-1]].millasDisponibles > a.usuarios[i].millasDisponibles } //se fija que sean los mejores
 
 
     pred PerteneceSeq(s: seq<Id>, keys: seq<Id>) {para todo 0 <= i < |s| ->luego s[i] E keys} // E = Pertenece
