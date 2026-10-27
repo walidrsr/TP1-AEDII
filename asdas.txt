@@ -56,12 +56,12 @@ TAD AirMiles {
 
 
    
-    registrarUsuarioConReferidor(inout a: AirMiles, in nuevo_usuario: Z, in id_referidor: Z)
+    registrarUsuarioConReferidor(inout a: AirMiles, in nuevo_usuario: Z, in referidor: Z)
         requiere: {a0 = a} 
         requiere: {(not estaRegistrado(a.usuarios, nuevo_usuario) and estaRegistrado(a.usuarios, referidor))}
         requiere: {nuevo_usuario > 0}     
-        asegura:  { esPlatino(a0.usuarios[referidor].millasTotales )        ->L a.usuarios = setKey(setKey(a0.usuarios, id_referidor, (a0.usuario[id\_referidor].millasTotales, a0.usuario[id_referidor].millasDisponibles + 500, a0.usuario[id_referidor].historialVuelos, a0.usuario[id_referidor].historialTransacciones),nuevo_usuario,(500,500,0,<>,<>)))} 
-        asegura:  { not esPlatino(a0.usuarios[referidor].millasTotales)     ->L a.usuarios = setKey(setKey(a0.usuarios, id\_referidor, (a0.usuario[id\_referidor].millasTotales  + 500, a0.usuario[id\_referidor].millasDisponibles + 500, a0.usuario[id\_referidor].historialVuelos, a0.usuario[id_referidor].historialTransacciones),nuevo_usuario,(500,500,0,<>,<>)))}
+        asegura:  { esPlatino(a0.usuarios[referidor].millasTotales )        ->L a.usuarios = setKey(setKey(a0.usuarios, id_referidor, (a0.usuario[id\_referidor].millasTotales, a0.usuario[id_referidor].millasDisponibles + 500, a0.usuario[id_referidor].historialVuelos, a0.usuario[id\_referidor].historialTransacciones),nuevo_usuario,(500,500,0,<>,<>)))} 
+        asegura:  { not esPlatino(a0.usuarios[referidor].millasTotales)     ->L a.usuarios = setKey(setKey(a0.usuarios, id\_referidor, (a0.usuario[id\_referidor].millasTotales  + 500, a0.usuario[id\_referidor].millasDisponibles + 500, a0.usuario[id\_referidor].historialVuelos, a0.usuario[id\_referidor].historialTransacciones),nuevo_usuario,(500,500,0,<>,<>))}
         asegura:  {a.usuario = setKey(a1.usuario,nuevo_usuario,(500,500,0,<>,<>))}  //como en cualquiera de los casos modificamos a1, aca va a1, no a0
         asegura:  {a.promociones = a0.promociones}   //aca da igual porque ni tocamos promociones    
 
