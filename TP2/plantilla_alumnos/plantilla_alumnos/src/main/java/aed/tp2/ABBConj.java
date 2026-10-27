@@ -1,6 +1,6 @@
 package aed.tp2;
 
-public class ABB<T extends Comparable<T>> {
+public class ABBConj<T extends Comparable<T>> {
     private Nodo raiz;
     private int  cardinal;
 
@@ -19,7 +19,7 @@ public class ABB<T extends Comparable<T>> {
         }
     }   
 
-    public ABB() {
+    public ABBConj() {
         this.raiz = null;
         this.cardinal = 0;
 
@@ -82,17 +82,17 @@ public class ABB<T extends Comparable<T>> {
         cardinal ++;
     }
 
-    private Nodo buscarUsuario(int id){
+    public Nodo buscarUsuario(T id){
         Nodo actual = this.raiz;
         while (actual != null){
-            if ((actual.valor.compareTo(elem) < 0 && actual.hijo_der == null )  || (actual.valor.compareTo(elem) > 0 && actual.hijo_izq == null)  || (actual.valor.compareTo(elem) == 0)){
+            if ((actual.valor.compareTo(id) < 0 && actual.hijo_der == null )  || (actual.valor.compareTo(id) > 0 && actual.hijo_izq == null)  || (actual.valor.compareTo(id) == 0)){
                 break;
             }
-            else if (actual.valor.compareTo(elem) < 0){
-                actual = actual.der;
+            else if (actual.valor.compareTo(id) < 0){
+                actual = actual.hijo_der;
             }
             else{
-                actual = actual.izq;
+                actual = actual.hijo_izq;
             }
         }
         return actual;

@@ -2,7 +2,7 @@ package aed.tp2;
 import aed.tp2.Usuario;
 
 public class AirMiles {
-    private ABBConj<Usuario> usarios ; // 
+    private ABBConj<Usuario> usuarios ; // 
     private Usuario maxAcumulador ;
     private Usuario maxCanjeador;
     private Tries<promocion> promociones; // --> creo que seria un tries;
@@ -19,7 +19,7 @@ public class AirMiles {
     public void registrarUsuario(int id) 
     {
         Usuario nuevo = new Usuario(id,false);
-        usarios.insertar(nuevo); // O(U) 
+        usuarios.insertar(nuevo); // O(U) 
         if (maxAcumulador == null){
             maxAcumulador = nuevo;
         }
@@ -33,7 +33,7 @@ public class AirMiles {
     {
     
         Usuario nuevoUsuario = new Usuario(id,true);
-        usarios.insertar(nuevoUsuario);
+        usuarios.insertar(nuevoUsuario);
           if(nuevoUsuario.millasTotales > maxAcumulador.millasTotales){
             maxAcumulador = nuevoUsuario;
         }
@@ -54,7 +54,7 @@ public class AirMiles {
 
     public void canjearMillas(int id, double cantidad) 
     {
-        usuario u = usuarios.buscarPorId(id);
+        Usuario u = usuarios.buscarPorId(id); //// porqueeeeeeeeeeee
         
         u.millasDisponibles -= cantidad;
         u.millasCanjeadas += cantidad;
@@ -72,13 +72,13 @@ public class AirMiles {
 
     public double consultarSaldo(int id) 
     {
-       usuario u = usarios.buscarPorId(id); // O (log U) x ser ABB
+       Usuario u = usuarios.buscarUsuario(id); // O (log U) x ser ABB /// porque no si es generico buscar y en la def es de tipo T
        return u.millasDisponibles;
     }
 
     public String consultarCategoria(int id) 
     {
-        usuario u = usarios.buscarPorId(id); // O(log U)
+        Usuario u = usuarios.buscarUsuario(id); // O(log U)
         return u.categoria;
 
     }
@@ -97,7 +97,7 @@ public class AirMiles {
         ArregloRedimensionabla<usuario> resultado =  new ArregloRedimensionable .... ;
 
         for bla bla (){
-            usuario u = heap.extraerMayor();
+            Usuario u = heap.extraerMax();
             if (u != null){
                 resultado.agregar(u.id);
             }
@@ -122,14 +122,14 @@ public class AirMiles {
         throw new UnsupportedOperationException("Sin implementar");
     }
 
-    public int elMasAcumulador()  /* el que tiene mas millas totales */
+    public int elMasAcumulador()  /* el que tiene mas millas totales */ // nos puesieron int se puede cambiar a double ya qu enuestra especificacion usamso reales?
     {
-        return  maxAcumulador;
+        return  maxAcumulador.millasTotales;
     }
 
     public int elMasCanjeador()  /* en nuestra especificacion habiamos colocado que el mas canjeador es el que tiene mas ( millasCanjeadas del usuario + las millasDadas del historial de transacciones )*/
     {
-        return maxCanjeador;
+        return maxCanjeado.millasCanjeadas;
     }
 
     public int[][] paresTransferidoresExclusivos() // arrayRedimensionable

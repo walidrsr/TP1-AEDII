@@ -1,8 +1,6 @@
 
 package aed.tp2;
 
-import java.net.URI;
-
 public class Usuario implements Comparable<Usuario>
     {
         int idUsuario;
@@ -143,9 +141,9 @@ public class Usuario implements Comparable<Usuario>
             }
             return id;
         }
-
-        public integer compareTo(Usuario OtroUsuario){//ID
-            return integer.compare(this.idUsuario,OtroUsuario.idUsuario);
+        @Override 
+        public int compareTo(Usuario OtroUsuario){//ID
+            return Integer.compare(this.idUsuario,OtroUsuario.idUsuario);
         } 
 
 

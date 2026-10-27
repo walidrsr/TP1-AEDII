@@ -1,18 +1,18 @@
 package aed.tp2;
 
-public class Promocion {
+public class promocion {
         String nombre;
         double tope;
         double factor;
         double gastadas;
 
-        public Promocion(String nombrePromocion, double factorPromocion)
+        public void Promocion (String nombrePromocion, double factorPromocion)
         {
             nombre = nombrePromocion;
             factor = factorPromocion;
         }
 
-        public Promocion(String nombrePromocion, double factorPromocion, double topePromocion)
+        public void PromocionConTope(String nombrePromocion, double factorPromocion, double topePromocion)
         {
             nombre = nombrePromocion;
             factor = factorPromocion;
