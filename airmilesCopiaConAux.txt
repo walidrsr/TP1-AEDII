@@ -104,7 +104,14 @@ usuario ES struct <
         requiere: {cant_ids > 0}
         asegura: {ifThenElse(Z > |a.usuarios|, |res| = |a.usuarios|, |res| = cant_ids) y PerteneceSeq(res,claves(a.usuario)) }
         asegura: {para todo 0 <= i < |res|-1 ->luego a.usuarios[res[i]].millasDisponibles >= a.usuarios[res[i+1]].millasDisponibles}
+<<<<<<< HEAD
         asegura: {(para todo i : Id) i E a.usuarios Y i !E res ->L a.usuarios[res[|res|-1]].millasDisponibles > a.usuarios[i].millasDisponibles } //se fija que sean los mejores
+=======
+        asegura: {(para todo i : Id) i E a.usuarios Y i !E res ->L res[|res|-1].millasDisponibles > a.usuarios[i].millasDisponibles  ---> !!!!!!!! STRUCT NO ES ID> STRUC????} //se fija que sean los mejores
+
+
+    pred PerteneceSeq(s: seq<Id>, keys: seq<Id>) {para todo 0 <= i < |s| ->luego s[i] E keys} // E = Pertenece
+>>>>>>> cfb9d2cf73a0c560f55c62773b4980083b739352
 
     resumenTransacciones(in a: AirMiles, int id_usuario: Z): tuple(R,R,R)
         requiere: {estaRegistrado(a.usuarios, id_usuario)}
