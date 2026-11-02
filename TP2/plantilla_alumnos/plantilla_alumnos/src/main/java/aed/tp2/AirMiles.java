@@ -5,7 +5,7 @@ public class AirMiles {
     private ABBConj<Usuario> usuarios ; // 
     private Usuario maxAcumulador ;
     private Usuario maxCanjeador;
-    private Tries<promocion> promociones; // --> creo que seria un tries;
+    private Tries promociones; // --> creo que seria un tries;
 
 
     public AirMiles() 

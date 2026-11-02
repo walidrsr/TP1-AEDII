@@ -1,4 +1,4 @@
-package aed.tp2;
+package aed.tp2; /// esto se saca por el trie
 
 public class promocion {
         String nombre;

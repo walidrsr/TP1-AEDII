@@ -1,54 +1,21 @@
-/////////////////// (TAD CON RENOMBRES) ////////////////////////////////////// !!!!!!!!!!!!!!!! (OJO CHEQUEARRR) !!!!!!!!!!!!!!!/////////////////////////////
 
-(Renombres de tipos):
-Id ES Z
-nombre_promocion ES String
-Categoria ES enum {Bronce,Plata,Oro,Platino} // ver si despues se utiliza o no, o se agrega en un observador
+1) ¿Esta bien las estructuras hechas? serian las siguientes:
+    public class AirMiles {
+    private ABBConj<Usuario> usuarios ;
+    private Usuario maxAcumulador ;
+    private Usuario maxCanjeador;
+    private Tries promociones; }  --> estas serian las estructuras que tomamos para realizar el tp2.
+2) maxAcumulador y maxCanjeador son punteros que se van actualiazando a medida que se hacen los metodos.
+3) por otro lado usamos un maxHeap para RankingMillas, ya que tiene O(log n) y un arrayList para guardar los usuarios.
+La idea en este ejercicio es recorrer todo el array e ir insertando cada elemento en el maxHeap, donde la complejidad seria O(n log u), queriamos saber si esto es correcto
+4) Como escogimos Tries para las promociones donde,
+La clase Trie tiene solamente un atributo que es la raíz de tipo TrieNodo
+La clase TrieNodo tiene los siguientes atributos:
+Las características de promoción (Factor, tope, gastadas)
+Un booleano Fin que indica que es un nodo con valores no nulos
+Un Array de TrieNodo Hijos, que apuntan a null o a otro TrieNodo
 
+Los arrays de TrieNodo Hijos tienen 27 espacios (correspondientes a las letras minúsculas de la 'a' a la 'z' y la posicion 26 al resto de los caracteres).
+A los nombres de las promos se los lee quitando los acentos, pasando todo a minúscula y cambiando las 'ñ' por 'n'.
 
-(STRUCTS AUX):{
-
-    promocion ES struct<
-        factor:R
-        tope:R
-        gastadas:R
-    >
-
-
-    vuelo ES struct<distancia : Z, millasGanadas: R, promocion: String, factor: R>
-    transaccion ES struct<identificador_usuario2:Z, monto: Z>
-
-
-    usuario ES struct <
-        millas_disponibles:R
-        millasTotales :R
-        millasCanjeadas:R ///----> PORQUE NECESITAMOS ESTO??? 
-        historial_vuelos: seq<vuelo>
-        historial_transacciones: seq <transaccion>
-    >
-}
-
-TAD Airmiles {
-        obs usuarios : dicc <Id,usuario>
-        obs promociones : dicc <nombre_promocion,promocion>
-}
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////// TAD ORIGINAL ////////////////////////////////////////////////////////
-TAD AirMiles {
-////OBSERVADORES
-obs promociones: dicc< nombre_promocion , (struct<factor : R , Tope: R, Gastadas: R>) > 
-
-obs usuarios: dicc 
-                CLAVE : < Id_usuarios: Z , 
-                   
-                VALOR : ( ///   ////
-                        struct< millasDisponibles: R, millasTotales: R , millasCanjeadas:R  > , 
-                        historial_vuelos: seq< struc<distancia : Z, millasGanadas: R, promocion: String, factor: R>,  /  falta categoriaaa????, en el proc consultarCategoria adem
-                        historial_transacciones:seq< struc<identificador_usuario2:Z, monto: Z>>> 
-                        ) 
-                    >  
+En vez de guardar los nombres se leen como caminos (por ejemplo 'AB' se lee como 'ab' y es el camino raíz->raiz.hijos[0]->raiz.hijos[0].hijos[1])
