@@ -13,7 +13,7 @@ public class AirMiles {
         this.usuarios= new ABBConj();
         this.maxCanjeador = null;
         this.maxAcumulador = null;
-        this.promociones = new Tries(); 
+        this.promociones = new Trie(); 
     }
     
     public void registrarUsuario(int id) // O(log U)

@@ -99,9 +99,6 @@ public class ABBConj<T extends Comparable<T>> {
     }
     
 
-
-
-    
     public void insertar(T elem){ // O(N) y promedio O(log N)
         Nodo nuevoNodo = new Nodo(elem);
         
@@ -138,8 +135,6 @@ public class ABBConj<T extends Comparable<T>> {
         cardinal ++;
     }
     
-
-
     public Nodo buscarUsuario(T id){
         Nodo actual = this.raiz;
         while (actual != null){
