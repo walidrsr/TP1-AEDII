@@ -1,138 +1,148 @@
 package aed.tp2;
-import aed.tp2.Usuario;
 
 public class AirMiles {
-    private ABBConj<Usuario> usuarios ; // 
-    private Usuario maxAcumulador ;
+    private ABBConj usuarios;
+    private Usuario maxAcumulador;
     private Usuario maxCanjeador;
-    private Tries promociones; // --> creo que seria un tries;
+    private Trie promociones;
+    private MaxHeap heap;
 
 
-    public AirMiles() 
+    public AirMiles()
     {
         this.usuarios= new ABBConj();
         this.maxCanjeador = null;
         this.maxAcumulador = null;
-        this.promociones = new Tries(); 
+        this.promociones = new Trie();
+        this.heap = new MaxHeap();
     }
-
-    public void registrarUsuario(int id) 
+    
+    public void registrarUsuario(int id) // O(log U)
     {
         Usuario nuevo = new Usuario(id,false);
-        usuarios.insertar(nuevo); // O(U) 
+        usuarios.insertar(nuevo); // O(log U)
+        heap.insertar(nuevo); // O(log U)
         if (maxAcumulador == null){
             maxAcumulador = nuevo;
         }
         if (maxCanjeador == null){
             maxCanjeador = nuevo;
         }
-      
     }
 
     public void registrarUsuarioConReferidor(int id, int ref) 
     {
-    
         Usuario nuevoUsuario = new Usuario(id,true);
-        usuarios.insertar(nuevoUsuario);
-          if(nuevoUsuario.millasTotales > maxAcumulador.millasTotales){
+        usuarios.insertar(nuevoUsuario); // O(log U)
+        heap.insertar(nuevoUsuario); // O(log U)
+        Usuario referidor = usuarios.buscarUsuario(ref); // O(log U)
+        referidor.millasDisponibles += 500;
+        referidor.millasTotales += 500;
+        // actualizar en heap con handle
+        if (nuevoUsuario.millasTotales > maxAcumulador.millasTotales){
             maxAcumulador = nuevoUsuario;
         }
           
-           if(nuevoUsuario.millasTotales > maxCanjeador.millasTotales){
+        if (nuevoUsuario.millasTotales > maxCanjeador.millasTotales){
             maxCanjeador= nuevoUsuario;
         }
     }
-    private boolean esMaximo(double actual, double nuevo){ // O(1)
-        return actual < nuevo;
-    }
-   
 
     public void acumularMillas(int id, double distancia, String nombrePromo) 
     {
-        throw new UnsupportedOperationException("Sin implementar");
+        Usuario u = usuarios.buscarUsuario(id); // O(log U)
+        // actualizar en heap con handle
+        u.ganarMillasPorVuelo(distancia, promociones.buscarNodoFinDeNombre(nombrePromo).factor); // no se si está bien
+        if (maxAcumulador.millasTotales < u.millasTotales) {
+            maxAcumulador = u;
+        }
     }
 
     public void canjearMillas(int id, double cantidad) 
     {
-        Usuario u = usuarios.buscarPorId(id); //// porqueeeeeeeeeeee
-        
-        u.millasDisponibles -= cantidad;
-        u.millasCanjeadas += cantidad;
-
-        if (esMaximo(maxCanjeador.millasCanjeadas, u.millasCanjeadas)){
+        Usuario u = usuarios.buscarUsuario(id); // O(log U)
+        u.canjear(cantidad);
+        // actualizar en el heap con handle
+        if (maxCanjeador.millasCanjeadas < u.millasCanjeadas){
             maxCanjeador = u;
         }
-
     }
 
     public void transferirMillas(int origen, int destino, double cantidad) 
     {
-        throw new UnsupportedOperationException("Sin implementar");
+        Usuario UsuarioDa = usuarios.buscarUsuario(origen);
+        Usuario UsuarioRecibe = usuarios.buscarUsuario(destino);
+        UsuarioDa.darMillas(cantidad, destino);
+        UsuarioRecibe.recibirMillas(cantidad, origen);
+        // actualizar en el heap con handle
+        if (maxAcumulador.millasTotales < UsuarioRecibe.millasTotales) {
+            maxAcumulador = UsuarioRecibe;
+        }
     }
 
     public double consultarSaldo(int id) 
     {
-       Usuario u = usuarios.buscarUsuario(id); // O (log U) x ser ABB /// porque no si es generico buscar y en la def es de tipo T
+       Usuario u = usuarios.buscarUsuario(id); // O(log U)
        return u.millasDisponibles;
     }
 
     public String consultarCategoria(int id) 
     {
         Usuario u = usuarios.buscarUsuario(id); // O(log U)
-        return u.categoria;
-
+        return u.categoria();
     }
 
-    public int[] rankingMillas(int n) // array redimensionalbe
+    public int[] rankingMillas(int n) // O(N log U), supongo que n < |array|
     {
-        MaxHeap heap = new MaxHeap(Usuarios.cardinal); // 
+        Usuario[] listaUsuarios = new Usuario[n];
+        int[] resultado = new int[n];
 
-        ArregloRedimensionabla<usuario> todosLosUsuarios = new ArregloRedimensionable .... ;
-        usuario.recorrer(todosLosUsuarios); // O (N)
-
-        /* recorrer todo el arreglo O(N) y por cada usuario lo insertas en el heap O(log U)*/ 
-        for (bla bla)
-            {insertar usuario al heap };
-
-        ArregloRedimensionabla<usuario> resultado =  new ArregloRedimensionable .... ;
-
-        for bla bla (){
+        for (int i = 0; i < n; i++){
             Usuario u = heap.extraerMax();
-            if (u != null){
-                resultado.agregar(u.id);
+            if (u != null) {
+                listaUsuarios[i] = u;
             }
         }
+        for (int j = 0; j < listaUsuarios.length; j++) {
+            heap.insertar(listaUsuarios[j]);
+            resultado[j] = listaUsuarios[j].idUsuario;
+        }
+        
         return resultado;
-
-
     }
 
     public void iniciarPromocion(String nombre, double factor) 
     {
-        throw new UnsupportedOperationException("Sin implementar");
+        promociones.agregarPromo(nombre, factor, 0);
     }
 
     public void iniciarPromocionConTope(String nombre, double factor, double tope) 
     {
-        throw new UnsupportedOperationException("Sin implementar");
+        promociones.agregarPromo(nombre, factor, tope);
     }
 
     public void finalizarPromocion(String nombre) 
     {
-        throw new UnsupportedOperationException("Sin implementar");
+        
     }
 
-    public int elMasAcumulador()  /* el que tiene mas millas totales */ // nos puesieron int se puede cambiar a double ya qu enuestra especificacion usamso reales?
+    public int elMasAcumulador() // O(1)
     {
-        return  maxAcumulador.millasTotales;
+        if (maxAcumulador == null) {
+            return -1;
+        }
+        return maxAcumulador.idUsuario;
     }
 
-    public int elMasCanjeador()  /* en nuestra especificacion habiamos colocado que el mas canjeador es el que tiene mas ( millasCanjeadas del usuario + las millasDadas del historial de transacciones )*/
+    public int elMasCanjeador()  // O(1)
     {
-        return maxCanjeado.millasCanjeadas;
+        if (maxCanjeador == null) {
+            return -1;
+        }
+        return maxCanjeador.idUsuario;
     }
 
-    public int[][] paresTransferidoresExclusivos() // arrayRedimensionable
+    public int[][] paresTransferidoresExclusivos()
     {
         throw new UnsupportedOperationException("Sin implementar");
     }
