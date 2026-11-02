@@ -5,7 +5,7 @@ public class AirMiles {
     private ABBConj<Usuario> usuarios ; // 
     private Usuario maxAcumulador ;
     private Usuario maxCanjeador;
-    private Tries promociones; // --> creo que seria un tries;
+    private Trie promociones; // 
 
 
     public AirMiles() 
@@ -13,7 +13,7 @@ public class AirMiles {
         this.usuarios= new ABBConj();
         this.maxCanjeador = null;
         this.maxAcumulador = null;
-        this.promociones = new Tries(); 
+        this.promociones = new Trie(); 
     }
 
     public void registrarUsuario(int id) 
@@ -91,8 +91,10 @@ public class AirMiles {
         usuario.recorrer(todosLosUsuarios); // O (N)
 
         /* recorrer todo el arreglo O(N) y por cada usuario lo insertas en el heap O(log U)*/ 
-        for (bla bla)
+        for (bla bla) 
             {insertar usuario al heap };
+        
+        // USUARIOS EN RANKINGMILLAS.
 
         ArregloRedimensionabla<usuario> resultado =  new ArregloRedimensionable .... ;
 

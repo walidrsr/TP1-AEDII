@@ -5,11 +5,11 @@ public class ABBConj<T extends Comparable<T>> {
     private int  cardinal;
 
 
-    private class Nodo {
-        T valor;
-        Nodo hijo_der;
-        Nodo hijo_izq;
-        Nodo padre;
+    private  class Nodo implements  Handle<T> {
+        public T valor;
+        public Nodo hijo_der;
+        public Nodo hijo_izq;
+        public Nodo padre;
 
         Nodo(T v) {
             valor = v;
@@ -17,7 +17,22 @@ public class ABBConj<T extends Comparable<T>> {
             hijo_izq = null;
             padre = null;
         }
-    }   
+
+        public T valor(){
+            return this.valor;
+        }
+    
+        public void modificar (T v){
+            this.valor=v;
+        }
+        public boolean equals(Handle<T> h){
+            if(h == null){
+                return false;
+            }
+            return this.valor.equals(h.valor());
+        }
+    } 
+
 
     public ABBConj() {
         this.raiz = null;
@@ -46,6 +61,47 @@ public class ABBConj<T extends Comparable<T>> {
         return  actualMax.valor;
     }
 
+    public Handle<T> insertarConHandle (T elem){
+        Nodo nuevoNodo = new Nodo(elem);
+        
+        if (raiz== null){
+            raiz = nuevoNodo;
+            cardinal = 1;
+            return nuevoNodo;
+        }
+        Nodo actual = raiz;
+        Nodo padreActual = null;
+        int comparar = 0;
+        
+        while(actual != null){
+            padreActual = actual;
+            comparar = elem.compareTo(actual.valor);
+
+            if (comparar <0){
+                actual = actual.hijo_izq;
+            } else if (comparar >0) {
+                actual = actual.hijo_der;
+            } else {
+                return actual;
+            }
+
+        }
+        nuevoNodo.padre = padreActual;
+
+        if (comparar <0){
+            padreActual.hijo_izq = nuevoNodo;
+        } else {
+            padreActual.hijo_der = nuevoNodo;
+        }
+
+        cardinal ++;
+        return nuevoNodo;
+    }
+    
+
+
+
+    
     public void insertar(T elem){ // O(N) y promedio O(log N)
         Nodo nuevoNodo = new Nodo(elem);
         
@@ -81,6 +137,8 @@ public class ABBConj<T extends Comparable<T>> {
 
         cardinal ++;
     }
+    
+
 
     public Nodo buscarUsuario(T id){
         Nodo actual = this.raiz;

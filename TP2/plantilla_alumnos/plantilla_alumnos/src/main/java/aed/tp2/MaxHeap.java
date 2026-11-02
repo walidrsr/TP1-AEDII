@@ -2,7 +2,7 @@ package aed.tp2;
 
 import java.util.ArrayList;
 
-public class MaxHeap { // la prioridad es millasDisponibles
+public class MaxHeap { // la prioridad es millasDisponibles , //usuarios ordenados por millasDisp
     private ArrayList<Usuario> elementos;
 
     public MaxHeap (){
