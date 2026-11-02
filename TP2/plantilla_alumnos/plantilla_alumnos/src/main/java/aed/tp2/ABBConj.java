@@ -1,24 +1,40 @@
 package aed.tp2;
 
-public class ABBConj<T extends Comparable<T>> {
+public class ABBConj {
     private Nodo raiz;
-    private int  cardinal;
+    private int cardinal;
 
 
     private class Nodo {
-        T valor;
+        Usuario valor;
         Nodo hijo_der;
         Nodo hijo_izq;
         Nodo padre;
 
-        Nodo(T v) {
+        Nodo(Usuario v) {
             valor = v;
             hijo_der = null;
             hijo_izq = null;
             padre = null;
         }
     }   
+/*
+    private class HandleAM implements Handle<T> {
+        private Nodo nodo;
 
+        private HandleAM(Nodo n){
+            this.nodo = n;
+        }
+        public Nodo valor() {
+        }
+        public void eliminar() {
+        }
+        public void modificar(Usuario u) {
+        }
+        public boolean equals(Handle<Usuario> h) {
+        }
+    }  
+*/
     public ABBConj() {
         this.raiz = null;
         this.cardinal = 0;
@@ -29,27 +45,10 @@ public class ABBConj<T extends Comparable<T>> {
         return this.cardinal;
     }
 
-    public T minimo(){
-        Nodo actualMin = raiz;
-        while( actualMin.hijo_izq != null){
-            actualMin = actualMin.hijo_izq;
-        }
-       
-        return  actualMin.valor;
-    }
-
-    public T maximo(){
-        Nodo actualMax = raiz;
-        while(actualMax.hijo_der != null){
-            actualMax = actualMax.hijo_der;
-        }
-        return  actualMax.valor;
-    }
-
-    public void insertar(T elem){ // O(N) y promedio O(log N)
+    public void insertar(Usuario elem){ // O(U) peor y promedio O(log U)
         Nodo nuevoNodo = new Nodo(elem);
         
-        if (raiz== null){
+        if (raiz == null){
             raiz = nuevoNodo;
             cardinal = 1;
             return;
@@ -62,7 +61,7 @@ public class ABBConj<T extends Comparable<T>> {
             padreActual = actual;
             comparar = elem.compareTo(actual.valor);
 
-            if (comparar <0){
+            if (comparar<0){
                 actual = actual.hijo_izq;
             } else if (comparar >0) {
                 actual = actual.hijo_der;
@@ -82,23 +81,19 @@ public class ABBConj<T extends Comparable<T>> {
         cardinal ++;
     }
 
-    public Nodo buscarUsuario(T id){
+    public Usuario buscarUsuario(int id){ // O(U) peor y promedio O(log U)
         Nodo actual = this.raiz;
         while (actual != null){
-            if ((actual.valor.compareTo(id) < 0 && actual.hijo_der == null )  || (actual.valor.compareTo(id) > 0 && actual.hijo_izq == null)  || (actual.valor.compareTo(id) == 0)){
+            if ((actual.valor.idUsuario < id && actual.hijo_der == null)  || (actual.valor.idUsuario > id && actual.hijo_izq == null)  || (actual.valor.idUsuario == id)){
                 break;
             }
-            else if (actual.valor.compareTo(id) < 0){
+            else if (actual.valor.idUsuario < id){
                 actual = actual.hijo_der;
             }
             else{
                 actual = actual.hijo_izq;
             }
         }
-        return actual;
+        return actual.valor;
     }
 }
-
-
-
-
