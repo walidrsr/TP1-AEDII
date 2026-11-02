@@ -8,8 +8,7 @@ public class Usuario implements Comparable<Usuario>
         double millasDisponibles;
         double millasCanjeadas;
         int idExclusivo;
-        //T historialVuelos;
-        //T historialTransacciones;
+ 
         public Usuario(int id, boolean referido)
         {
             if (referido)
@@ -25,8 +24,6 @@ public class Usuario implements Comparable<Usuario>
             idUsuario = id;
             millasCanjeadas = 0;
             idExclusivo = 0;
-            //historialVuelos = vacio
-            //historialTransacciones = vacio
         }
 
         public double saldo()
@@ -82,7 +79,6 @@ public class Usuario implements Comparable<Usuario>
             double millasGanadas = distancia * multiplicador * factorPromo;
             millasDisponibles += millasGanadas;
             millasTotales += millasGanadas;
-            // ACTUALIZAR HISTORIAL VUELOS
         }
 
         public void canjear(double distancia)
@@ -102,12 +98,12 @@ public class Usuario implements Comparable<Usuario>
             {
                 idExclusivo = -1;
             }
-            // ACTUALIZAR HISTORIAL TRANSACCIONES
         }
 
         public void recibirMillas(double cantidad, int idOtroUsuario)
         {
             millasDisponibles += cantidad;
+            millasTotales += cantidad;
             if (idExclusivo == 0)
             {
                 idExclusivo = idOtroUsuario;
@@ -116,7 +112,6 @@ public class Usuario implements Comparable<Usuario>
             {
                 idExclusivo = -1;
             }
-            // ACTUALIZAR HISTORIAL TRANSACCIONES
         }
     
         public boolean esExclusivo() // 
@@ -125,8 +120,6 @@ public class Usuario implements Comparable<Usuario>
             // recorre el historial y se fija que todos tengan el mismo usuario 
             return exclusivo;
         }
-
-
 
         public int transferidorUnico()
         {
@@ -142,7 +135,7 @@ public class Usuario implements Comparable<Usuario>
             return id;
         }
         @Override 
-        public int compareTo(Usuario OtroUsuario){//ID
+        public int compareTo(Usuario OtroUsuario){ // ID
             return Integer.compare(this.idUsuario,OtroUsuario.idUsuario);
         } 
 
