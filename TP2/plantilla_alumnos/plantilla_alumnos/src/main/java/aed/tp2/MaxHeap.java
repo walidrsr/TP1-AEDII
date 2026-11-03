@@ -1,36 +1,36 @@
 package aed.tp2;
-
 import java.util.ArrayList;
 
-public class MaxHeap { // la prioridad es millasDisponibles , //usuarios ordenados por millasDisp
-    private ArrayList<Usuario> elementos;
+public class MaxHeap<T extends Comparable<T>> {
+    private ArrayList<T> elementos;
 
-    public MaxHeap (){
+    public MaxHeap() {
         this.elementos = new ArrayList<>();
     }
 
-    private int IndicePadre(int i){
-        return Math.floorDiv(i-1,2);
+    private int indicePadre(int i) {
+        return Math.floorDiv(i - 1, 2);
     }
 
-    private int IndiceHijoIzq(int i){
-        return (2*i) +1;
+    private int indiceHijoIzq(int i) {
+        return (2 * i) + 1;
     }
     
-    private int IndiceHijoDer(int i){
-        return (2*i) +2;
+    private int indiceHijoDer(int i) {
+        return (2 * i) + 2;
     }
 
-    private void intercambiar(int hijo, int padre) { // necesariamente tiene que haber indices hijo y padre validos
-        Usuario valorhijo = elementos.get(hijo);
-        elementos.set(hijo,elementos.get(padre));
-        elementos.set(padre, valorhijo);
+    private void intercambiar(int hijo, int padre) {
+        T valorHijo = elementos.get(hijo);
+        elementos.set(hijo, elementos.get(padre));
+        elementos.set(padre, valorHijo);
     }
 
     private void siftUp(int i) {
-        while (i != 0 && elementos.get(IndicePadre(i)).millasDisponibles < elementos.get(i).millasDisponibles) { // mientars que hijo > padre y no sea la raiz
-            intercambiar(i, IndicePadre(i));
-            i = IndicePadre(i);
+        // Mientras no sea la raíz y el padre sea menor que el hijo (padre.compareTo(hijo) < 0)
+        while (i != 0 && elementos.get(indicePadre(i)).compareTo(elementos.get(i)) < 0) {
+            intercambiar(i, indicePadre(i));
+            i = indicePadre(i);
         }
     }
 
@@ -41,22 +41,27 @@ public class MaxHeap { // la prioridad es millasDisponibles , //usuarios ordenad
             }
             return;
         }
-        elementos.set(0, elementos.getLast()); // intercambio la raiz con el ultimo
-        elementos.remove(elementos.size()-1); // saco la raiz
+        elementos.set(0, elementos.getLast()); // Intercambio la raíz con el último
+        elementos.remove(elementos.size() - 1); // Saco la raíz vieja
         int i = 0;
        
         while (true) {
-            if (IndiceHijoIzq(i) >= elementos.size()) {
-                break; // si no hay hijo izq, no hay hijo
+            int hijoIzq = indiceHijoIzq(i);
+            if (hijoIzq >= elementos.size()) {
+                break; // Si no hay hijo izq, no hay hijos
             }
 
-            int hijoMayor = IndiceHijoIzq(i);
-            if (IndiceHijoDer(i) < elementos.size() && elementos.get(IndiceHijoDer(i)).millasDisponibles > elementos.get(IndiceHijoIzq(i)).millasDisponibles) {
-                hijoMayor = IndiceHijoDer(i);
+            int hijoMayor = hijoIzq;
+            int hijoDer = indiceHijoDer(i);
+            
+            // Si hay hijo derecho y es mayor que el izquierdo
+            if (hijoDer < elementos.size() && elementos.get(hijoDer).compareTo(elementos.get(hijoIzq)) > 0) {
+                hijoMayor = hijoDer;
             }
 
-            if (elementos.get(i).millasDisponibles >= elementos.get(hijoMayor).millasDisponibles) {
-                break; // entonces ningun hijo es mayor que el actual
+            // Si el actual es mayor o igual al mayor de sus hijos, terminó
+            if (elementos.get(i).compareTo(elementos.get(hijoMayor)) >= 0) {
+                break; 
             }
 
             intercambiar(i, hijoMayor);
@@ -64,14 +69,32 @@ public class MaxHeap { // la prioridad es millasDisponibles , //usuarios ordenad
         }
     }
     
-    public void insertar(Usuario usuario) { // O (???)
-        elementos.add(usuario);
-        siftUp(elementos.size()-1); //agrego un elem y lo meto donde tiene que estar
+    public void insertar(T elem) {
+        elementos.add(elem);
+        siftUp(elementos.size() - 1);
     }
 
-    public Usuario extraerMax(){
-        Usuario res = elementos.getFirst();
+    public T extraerMax() {
+        if (elementos.isEmpty()) {
+            return null;
+        }
+        T res = elementos.getFirst();
         siftDown();
         return res;
+    }
+
+    public T getMaximo() {
+        if (elementos.isEmpty()) {
+            return null;
+        }
+        return elementos.getFirst();
+    }
+
+    public boolean esVacio() {
+        return elementos.isEmpty();
+    }
+
+    public int cardinal() {
+        return elementos.size();
     }
 }

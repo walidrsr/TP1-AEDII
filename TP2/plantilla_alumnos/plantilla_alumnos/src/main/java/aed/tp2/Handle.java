@@ -9,7 +9,7 @@ public T valor();
 /* 
 Elimina al elemento de la colección
 */
-/*public void eliminar();
+public void eliminar();
 
     /* 
 Modifica al elemento de la colección y su orden (de ser necesario)

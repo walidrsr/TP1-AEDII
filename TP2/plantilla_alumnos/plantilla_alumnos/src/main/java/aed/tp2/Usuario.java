@@ -139,7 +139,4 @@ public class Usuario implements Comparable<Usuario>
             return Integer.compare(this.idUsuario,OtroUsuario.idUsuario);
         } 
 
-
-
-
     }

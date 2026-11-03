@@ -1,10 +1,12 @@
 package aed.tp2;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ABBConjTests {
 
     @Test
     void insertar_un_elemento() {
-        ABBConj<Integer> conjunto = new ABBConj<Integer>();
+        ABB<Integer> conjunto = new ABB<Integer>();
 
         conjunto.insertar(42);
 

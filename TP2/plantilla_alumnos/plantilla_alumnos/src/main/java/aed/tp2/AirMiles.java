@@ -1,7 +1,7 @@
 package aed.tp2;
 
 public class AirMiles {
-    private ABBConj usuarios;
+    private ABB usuarios;
     private Usuario maxAcumulador;
     private Usuario maxCanjeador;
     private Trie promociones;
@@ -10,7 +10,7 @@ public class AirMiles {
 
     public AirMiles()
     {
-        this.usuarios= new ABBConj();
+        this.usuarios= new ABB();
         this.maxCanjeador = null;
         this.maxAcumulador = null;
         this.promociones = new Trie(); 
@@ -34,7 +34,7 @@ public class AirMiles {
         Usuario nuevoUsuario = new Usuario(id,true);
         usuarios.insertar(nuevoUsuario); // O(log U)
         heap.insertar(nuevoUsuario); // O(log U)
-        Usuario referidor = usuarios.buscarUsuario(ref); // O(log U)
+        Usuario referidor = (Usuario) usuarios.buscarUsuario(ref); // O(log U)
         referidor.millasDisponibles += 500;
         referidor.millasTotales += 500;
         // actualizar en heap con handle
@@ -49,7 +49,7 @@ public class AirMiles {
 
     public void acumularMillas(int id, double distancia, String nombrePromo) 
     {
-        Usuario u = usuarios.buscarUsuario(id); // O(log U)
+        Usuario u = (Usuario) usuarios.buscarUsuario(id); // O(log U)
         // actualizar en heap con handle
         u.ganarMillasPorVuelo(distancia, promociones.buscarNodoFinDeNombre(nombrePromo).factor); // no se si está bien
         if (maxAcumulador.millasTotales < u.millasTotales) {
@@ -59,7 +59,7 @@ public class AirMiles {
 
     public void canjearMillas(int id, double cantidad) 
     {
-        Usuario u = usuarios.buscarUsuario(id); // O(log U)
+        Usuario u = (Usuario) usuarios.buscarUsuario(id); // O(log U)
         u.canjear(cantidad);
         // actualizar en el heap con handle
         if (maxCanjeador.millasCanjeadas < u.millasCanjeadas){
@@ -69,8 +69,8 @@ public class AirMiles {
 
     public void transferirMillas(int origen, int destino, double cantidad) 
     {
-        Usuario UsuarioDa = usuarios.buscarUsuario(origen);
-        Usuario UsuarioRecibe = usuarios.buscarUsuario(destino);
+        Usuario UsuarioDa =(Usuario) usuarios.buscarUsuario(origen);
+        Usuario UsuarioRecibe = (Usuario) usuarios.buscarUsuario(destino);
         UsuarioDa.darMillas(cantidad, destino);
         UsuarioRecibe.recibirMillas(cantidad, origen);
         // actualizar en el heap con handle
@@ -81,31 +81,24 @@ public class AirMiles {
 
     public double consultarSaldo(int id) 
     {
-       Usuario u = usuarios.buscarUsuario(id); // O(log U)
+       Usuario u = (Usuario) usuarios.buscarUsuario(id); // O(log U)
        return u.millasDisponibles;
     }
 
     public String consultarCategoria(int id) 
     {
-        Usuario u = usuarios.buscarUsuario(id); // O(log U)
+        Usuario u = (Usuario) usuarios.buscarUsuario(id); // O(log U)
         return u.categoria();
     }
 
-    public int[] rankingMillas(int n) // array redimensionalbe
+
+    public int[] rankingMillas(int n) // O(N log U), supongo que n < |array|
     {
-        MaxHeap heap = new MaxHeap(Usuarios.cardinal); // 
-
-        ArregloRedimensionabla<usuario> todosLosUsuarios = new ArregloRedimensionable .... ;
-        usuario.recorrer(todosLosUsuarios); // O (N)
-
-        /* recorrer todo el arreglo O(N) y por cada usuario lo insertas en el heap O(log U)*/ 
-        for (bla bla)
-            {insertar usuario al heap };
-
-        ArregloRedimensionabla<usuario> resultado =  new ArregloRedimensionable .... ;
+        Usuario[] listaUsuarios = new Usuario[n];
+        int[] resultado = new int[n];
 
         for (int i = 0; i < n; i++){
-            Usuario u = heap.extraerMax();
+            Usuario u = (Usuario) heap.extraerMax();
             if (u != null) {
                 listaUsuarios[i] = u;
             }
