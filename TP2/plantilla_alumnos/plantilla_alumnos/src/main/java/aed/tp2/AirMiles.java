@@ -10,7 +10,7 @@ public class AirMiles {
 
     public AirMiles()
     {
-        this.usuarios= new ABB();
+        this.usuarios= new ABB<>();
         this.maxCanjeador = null;
         this.maxAcumulador = null;
         this.promociones = new Trie(); 

@@ -1,8 +1,9 @@
 package aed.tp2;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ABBConjTests {
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class ABBTests {
 
     @Test
     void insertar_un_elemento() {

@@ -1,8 +1,10 @@
 package aed.tp2;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class MaxHeapTests {
+
     @Test
     void insertar_y_obtener_maximo() {
         MaxHeap<Integer> heap = new MaxHeap<>();
@@ -15,4 +17,5 @@ class MaxHeapTests {
         assertEquals(20, heap.getMaximo());
         assertEquals(3, heap.cardinal());
     }
+
 }

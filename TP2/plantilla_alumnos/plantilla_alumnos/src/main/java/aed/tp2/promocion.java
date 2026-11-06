@@ -1,22 +1,21 @@
 package aed.tp2; /// esto se saca por el trie
 
 public class promocion {
-        String nombre;
         double tope;
         double factor;
         double gastadas;
 
-        public void Promocion (String nombrePromocion, double factorPromocion)
+        public void  promocion (double factorPromocion)
         {
-            nombre = nombrePromocion;
             factor = factorPromocion;
+            tope = 0;
         }
 
-        public void PromocionConTope(String nombrePromocion, double factorPromocion, double topePromocion)
+        public void PromocionConTope(double factorPromocion, double topePromocion)
         {
-            nombre = nombrePromocion;
             factor = factorPromocion;
             tope = topePromocion;
+            gastadas = 0;
         }
 
         public void usarPromocion(double millas)
