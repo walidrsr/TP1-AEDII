@@ -13,6 +13,10 @@ public class MaxHeap<T> // la prioridad es millasDisponibles
         this.comparador = comparator;
     }
 
+    public int cardinal(){
+        return elementos.size();
+    }
+
     public  class HandleAM implements Handle<T>
     {
         private T valor;
@@ -101,6 +105,11 @@ public class MaxHeap<T> // la prioridad es millasDisponibles
             i = hijoMayor;
         }
     }
+
+    public T maximo(){
+        return elementos.get(0).valor;
+    }
+
 
     public HandleAM extraerMax()
     {

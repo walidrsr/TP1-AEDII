@@ -33,16 +33,19 @@ public class Trie<T>
         TrieNodo nodoActual = root;
         int posicionEnArray = (int)nombre.charAt(0);
         int largoNombre = nombre.length();
-        while (nodoActual.hijos[posicionEnArray] != null && i < largoNombre) 
+        while (nodoActual.hijos[posicionEnArray] != null && i < largoNombre - 1) 
         {
             nodoActual = nodoActual.hijos[posicionEnArray];
             i++;
             posicionEnArray = (int)nombre.charAt(i);
         }
-        if (nodoActual.fin == true && i == largoNombre)
-        {
-            valor = nodoActual.valor;
-        }
+        if (nodoActual.hijos[posicionEnArray] != null){
+            nodoActual = nodoActual.hijos[posicionEnArray];
+            if (nodoActual.fin == true && i == largoNombre -1)
+            {
+                valor = nodoActual.valor;
+            }
+         }   
         return valor;
     }
 
@@ -63,7 +66,14 @@ public class Trie<T>
         //caso hay una promo que contiene el nombre de esta
         if(i == largoNombre -1)
         {
-            nodoActual = nodoActual.hijos[posicionEnArray];
+            if (nodoActual.hijos[posicionEnArray] == null)
+            {
+                nodoActual.hijos[posicionEnArray] = new TrieNodo();
+            }
+            else
+            {
+                nodoActual = nodoActual.hijos[posicionEnArray];
+            }
             nodoActual.fin = true;
             nodoActual.valor = valor;
             nodoActual.cantidadHijos ++;
@@ -71,11 +81,15 @@ public class Trie<T>
         //caso nueva palabra
         else
         {
+            TrieNodo primerLetra = new TrieNodo();
+            nodoActual.cantidadHijos++;
+            nodoActual.hijos[posicionEnArray] = primerLetra;
+            nodoActual = primerLetra;
+
             String pal = nombre.substring(i+1);
             TrieNodo nodoFinal = guardarPalabra(nodoActual, pal);
             nodoFinal.fin = true;
-            nodoFinal.valor = valor;  
-            nodoFinal.cantidadHijos ++;      
+            nodoFinal.valor = valor;       
         }
     }
 
