@@ -10,7 +10,7 @@ public class usuarioTest {
         assertEquals(0, usuario.millasDisponibles);
         assertEquals(0, usuario.millasTotales);
         assertEquals(0, usuario.millasCanjeadas);
-        assertEquals(0, usuario.idExclusivo);
+        assertEquals(null, usuario.usuarioExclusivo);
         assertEquals("Bronce", usuario.categoria());
         assertEquals(0, usuario.saldo());
         
@@ -21,7 +21,7 @@ public class usuarioTest {
         assertEquals(500, usuario.millasDisponibles);
         assertEquals(500, usuario.millasTotales);
         assertEquals(0, usuario.millasCanjeadas);
-        assertEquals(0, usuario.idExclusivo);
+        assertEquals(null, usuario.usuarioExclusivo);
         assertEquals("Bronce", usuario.categoria());
         assertEquals(500, usuario.saldo());
     }
@@ -77,7 +77,7 @@ public class usuarioTest {
         assertEquals(2.0, u.multiplicadorCategoria());
 
     }
-    @Test 
+    
     
 
 

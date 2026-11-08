@@ -5,13 +5,14 @@ public class promocion {
         double factor;
         double gastadas;
 
-        public promocion(double factorPromocion)
+        public promocion (double factorPromocion)
         {
             factor = factorPromocion;
             tope = 0;
+            gastadas = 0;
         }
 
-        public void PromocionConTope(double factorPromocion, double topePromocion)
+        public promocion(double factorPromocion, double topePromocion)
         {
             factor = factorPromocion;
             tope = topePromocion;

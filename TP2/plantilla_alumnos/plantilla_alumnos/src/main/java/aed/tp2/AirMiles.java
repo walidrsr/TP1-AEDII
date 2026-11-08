@@ -5,7 +5,7 @@ public class AirMiles implements SistemaAirMiles
     private ABBConj<Handle<Usuario>> usuarios;
     private Usuario maxAcumulador;
     private Usuario maxCanjeador;
-    private Trie<promocion> promociones;
+    private listaPromociones promociones;
     private MaxHeap<Usuario> heap;
 
 
@@ -14,7 +14,7 @@ public class AirMiles implements SistemaAirMiles
         this.usuarios = new ABBConj<>();
         this.maxCanjeador = null;
         this.maxAcumulador = null;
-        this.promociones = new Trie<>();
+        this.promociones = new listaPromociones();
         this.heap = new MaxHeap<>(new Usuario.PorMillasDisponibles());
     }
     
@@ -53,8 +53,13 @@ public class AirMiles implements SistemaAirMiles
     {
         Handle<Usuario> handle = usuarios.buscar(id); // O(log U)
         Usuario usuario = handle.valor();
-        promocion promo  = promociones.buscar(nombrePromo);
-        usuario.ganarMillasPorVuelo(distancia, promo.factor); 
+        promocion promo  = promociones.buscarPromo(nombrePromo);
+        double factor = 1;
+        if (promo != null){
+            factor = promo.factor;
+            promociones.actualizarPromo(nombrePromo, promo, (distancia * factor * usuario.multiplicadorCategoria()));
+         }
+        usuario.ganarMillasPorVuelo(distancia, factor); 
         handle.modificar(usuario);
         if (maxAcumulador.millasTotales < usuario.millasTotales)
             {
@@ -128,12 +133,14 @@ public class AirMiles implements SistemaAirMiles
 
     public void iniciarPromocion(String nombre, double factor) 
     {
-        // promociones.agregar(nombre, factor);
+        promocion nuevaPromo = new promocion(factor);
+        promociones.agregarPromo(nombre, nuevaPromo);
     }
 
     public void iniciarPromocionConTope(String nombre, double factor, double tope) 
     {
-        // promociones.agregarPromo(nombre, factor, tope);
+        promocion nuevaPromo = new promocion(factor, tope);
+        promociones.agregarPromo(nombre, nuevaPromo);
     }
 
     public void finalizarPromocion(String nombre) 
