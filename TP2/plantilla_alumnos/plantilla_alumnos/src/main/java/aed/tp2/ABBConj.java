@@ -138,6 +138,7 @@ public class ABBConj<T>
     public class ABB_Iterador
     {
         private Nodo actual = menorId();
+        private Nodo maximo = maximaId();
 
         public boolean haySiguiente()
         {            
@@ -156,10 +157,10 @@ public class ABBConj<T>
                     sucesor = sucesor.hijo_izq;
                 }
             }
-            else if (this.actual != maximaId()) /* busco primer ancestro derecho */
+            else if (this.actual != maximo) /* busco primer ancestro derecho */ //lo cambio porque estas buscando maximaID en cada paso y suma complejidad
                 {
                 sucesor = this.actual.padre;
-                while (Integer.compare(sucesor.id, actual.id) > 0 && sucesor.padre != null)
+                while (Integer.compare(sucesor.id, actual.id) < 0)
                     {
                     sucesor = sucesor.padre;
                 } 
