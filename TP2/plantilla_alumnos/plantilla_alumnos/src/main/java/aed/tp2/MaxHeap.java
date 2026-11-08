@@ -1,101 +1,132 @@
 package aed.tp2;
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class MaxHeap<T extends Comparable<T>> {
-    private ArrayList<T> elementos;
+public class MaxHeap<T> // la prioridad es millasDisponibles
+{
+    private ArrayList<HandleAM> elementos;
+    private Comparator<T> comparador;
 
-    public MaxHeap() {
+    public MaxHeap(Comparator<T> comparator)
+    {
         this.elementos = new ArrayList<>();
+        this.comparador = comparator;
     }
 
-    private int indicePadre(int i) {
-        return Math.floorDiv(i - 1, 2);
+    public  class HandleAM implements Handle<T>
+    {
+        private T valor;
+        private int indice;
+
+        private HandleAM(T valor, int indice)
+        {
+            this.valor = valor;
+            this.indice = indice;
+        }
+
+        public T valor()
+        {
+            return valor;
+        }
+
+        public void modificar(T v) // hace los intercambios del heap
+        {
+            valor = v;
+            siftUp(indice);
+            siftDown(indice);
+        }
+    } 
+
+    private int IndicePadre(int i)
+    {
+        return Math.floorDiv(i-1,2);
     }
 
-    private int indiceHijoIzq(int i) {
-        return (2 * i) + 1;
+    private int IndiceHijoIzq(int i)
+    {
+        return (2*i) +1;
     }
     
-    private int indiceHijoDer(int i) {
-        return (2 * i) + 2;
+    private int IndiceHijoDer(int i)
+    {
+        return (2*i) +2;
     }
 
-    private void intercambiar(int hijo, int padre) {
-        T valorHijo = elementos.get(hijo);
-        elementos.set(hijo, elementos.get(padre));
-        elementos.set(padre, valorHijo);
+    public HandleAM insertar(T usuario) // O (???)
+    {
+        HandleAM handle = new HandleAM(usuario, elementos.size());
+        elementos.add(handle); // agrego un elem y lo meto donde tiene que estar
+        siftUp(handle.indice);
+        return handle;
     }
 
-    private void siftUp(int i) {
-        // Mientras no sea la raíz y el padre sea menor que el hijo (padre.compareTo(hijo) < 0)
-        while (i != 0 && elementos.get(indicePadre(i)).compareTo(elementos.get(i)) < 0) {
-            intercambiar(i, indicePadre(i));
-            i = indicePadre(i);
+    private void intercambiar(int hijo, int padre) // necesariamente tiene que haber indices hijo y padre validos
+    {
+        HandleAM handleHijo = elementos.get(hijo);
+        HandleAM handlePadre = elementos.get(padre);
+        elementos.set(hijo, handlePadre);
+        elementos.set(padre, handleHijo);
+        handleHijo.indice = padre;
+        handlePadre.indice = hijo;
+    }
+
+    public void siftUp(int i) // O(log U)
+    {
+        while (i != 0 && comparador.compare(elementos.get(i).valor, elementos.get(IndicePadre(i)).valor) > 0) { // mientars que hijo > padre y no sea la raiz
+            intercambiar(i, IndicePadre(i));
+            i = IndicePadre(i);
         }
     }
 
-    private void siftDown() {
-        if (elementos.size() <= 1) {
-            if (!elementos.isEmpty()) {
-                elementos.remove(0);
+    private void siftDown(int i) // O(log U)
+    {
+        while (true)
+            {
+            if (IndiceHijoIzq(i) >= elementos.size())
+                {
+                break; // si no hay hijo izq, no hay hijo
             }
-            return;
-        }
-        elementos.set(0, elementos.getLast()); // Intercambio la raíz con el último
-        elementos.remove(elementos.size() - 1); // Saco la raíz vieja
-        int i = 0;
-       
-        while (true) {
-            int hijoIzq = indiceHijoIzq(i);
-            if (hijoIzq >= elementos.size()) {
-                break; // Si no hay hijo izq, no hay hijos
+            int hijoMayor = IndiceHijoIzq(i);
+            if (IndiceHijoDer(i) < elementos.size() && comparador.compare(elementos.get(IndiceHijoDer(i)).valor,elementos.get(hijoMayor).valor) > 0)
+                {
+                hijoMayor = IndiceHijoDer(i);
             }
 
-            int hijoMayor = hijoIzq;
-            int hijoDer = indiceHijoDer(i);
-            
-            // Si hay hijo derecho y es mayor que el izquierdo
-            if (hijoDer < elementos.size() && elementos.get(hijoDer).compareTo(elementos.get(hijoIzq)) > 0) {
-                hijoMayor = hijoDer;
-            }
-
-            // Si el actual es mayor o igual al mayor de sus hijos, terminó
-            if (elementos.get(i).compareTo(elementos.get(hijoMayor)) >= 0) {
-                break; 
+            if (comparador.compare(elementos.get(hijoMayor).valor, elementos.get(i).valor) <= 0)
+                {
+                break; // entonces ningun hijo es mayor que el padre
             }
 
             intercambiar(i, hijoMayor);
             i = hijoMayor;
         }
     }
-    
-    public void insertar(T elem) {
-        elementos.add(elem);
-        siftUp(elementos.size() - 1);
-    }
 
-    public T extraerMax() {
-        if (elementos.isEmpty()) {
+    public HandleAM extraerMax()
+    {
+        if (elementos.isEmpty()) // en este caso no tengo elem para sacar
+            {
             return null;
         }
-        T res = elementos.getFirst();
-        siftDown();
-        return res;
-    }
+        HandleAM maximo = elementos.get(0);
 
-    public T getMaximo() {
-        if (elementos.isEmpty()) {
-            return null;
+        if (elementos.size() == 1) // en este caso no tengo nada con lo que intercambiar
+            {
+            elementos.remove(0);
+            return maximo;
         }
-        return elementos.getFirst();
+        HandleAM ultimo = elementos.remove(elementos.size() - 1);
+        elementos.set(0, ultimo);
+        ultimo.indice = 0;
+        siftDown(0);
+        return maximo;
     }
 
-    public boolean esVacio() {
-        return elementos.isEmpty();
-    }
-    
-
-    public int cardinal() {
-        return elementos.size();
+    public void reinsertar(Handle<T> h)
+    {
+        HandleAM handle = (HandleAM) h;
+        handle.indice = elementos.size();
+        elementos.add(handle);
+        siftUp(handle.indice);
     }
 }

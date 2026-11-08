@@ -1,13 +1,15 @@
 
 package aed.tp2;
 
-public class Usuario implements Comparable<Usuario>
+import java.util.Comparator;
+
+public class Usuario
     {
         int idUsuario;
         double millasTotales;
         double millasDisponibles;
         double millasCanjeadas;
-        int idExclusivo;
+        Usuario usuarioExclusivo; // 3 estados -> null, id = -1 o id = parTransferidor
  
         public Usuario(int id, boolean referido)
         {
@@ -23,7 +25,7 @@ public class Usuario implements Comparable<Usuario>
             }
             idUsuario = id;
             millasCanjeadas = 0;
-            idExclusivo = 0;
+            usuarioExclusivo = null;
         }
 
         public double saldo()
@@ -42,7 +44,7 @@ public class Usuario implements Comparable<Usuario>
             {
                 categoria = "Plata";
             }
-            else if (millasTotales < 100000)
+            else if (millasTotales < 1000000)
             {
                 categoria = "Oro";
             }
@@ -75,7 +77,6 @@ public class Usuario implements Comparable<Usuario>
         public void ganarMillasPorVuelo(double distancia, double factorPromo)
         {
             double multiplicador = this.multiplicadorCategoria();
-
             double millasGanadas = distancia * multiplicador * factorPromo;
             millasDisponibles += millasGanadas;
             millasTotales += millasGanadas;
@@ -90,6 +91,8 @@ public class Usuario implements Comparable<Usuario>
         public void darMillas(double cantidad, int idOtroUsuario)
         {
             millasDisponibles -= cantidad;
+            millasCanjeadas += cantidad;
+            /*
             if (idExclusivo == 0)
             {
                 idExclusivo = idOtroUsuario;
@@ -98,12 +101,13 @@ public class Usuario implements Comparable<Usuario>
             {
                 idExclusivo = -1;
             }
+                */
         }
 
         public void recibirMillas(double cantidad, int idOtroUsuario)
         {
             millasDisponibles += cantidad;
-            millasTotales += cantidad;
+            /*
             if (idExclusivo == 0)
             {
                 idExclusivo = idOtroUsuario;
@@ -112,31 +116,43 @@ public class Usuario implements Comparable<Usuario>
             {
                 idExclusivo = -1;
             }
+                */
         }
     
-        public boolean esExclusivo() // 
+        public void cambioUsuarioExclusivo(Usuario otroUsuario)
         {
-            boolean exclusivo = true;
-            // recorre el historial y se fija que todos tengan el mismo usuario 
-            return exclusivo;
-        }
-
-        public int transferidorUnico()
-        {
-            int id;
-            if (esExclusivo())
+            Usuario noPuedeSerTransferidorExclusivo = new Usuario(-1,false);
+            boolean ambosSinTransferencias = this.usuarioExclusivo == null && otroUsuario.usuarioExclusivo == null;
+            boolean yaSonTransferidores = this.usuarioExclusivo == otroUsuario && otroUsuario.usuarioExclusivo == this;
+            if (ambosSinTransferencias)
             {
-                id = 0; // el id del otro usuario
+                this.usuarioExclusivo = otroUsuario;
+                otroUsuario.usuarioExclusivo = this;
+            }
+            else if (yaSonTransferidores)
+            {
+                return;
             }
             else
             {
-                id = -1;
+                if (this.usuarioExclusivo != null) // cambio el usuarioExlusivo del usuarioExclusivo pq ese tampoco peude ser par exclusivo
+                {
+                    this.usuarioExclusivo.usuarioExclusivo = noPuedeSerTransferidorExclusivo;
+                }
+                if (otroUsuario.usuarioExclusivo != null) // cambio el usuarioExlusivo del usuarioExclusivo pq ese tampoco peude ser par exclusivo
+                {
+                    otroUsuario.usuarioExclusivo.usuarioExclusivo = noPuedeSerTransferidorExclusivo;
+                }
+                this.usuarioExclusivo = noPuedeSerTransferidorExclusivo;
+                otroUsuario.usuarioExclusivo = noPuedeSerTransferidorExclusivo;
             }
-            return id;
         }
-        @Override 
-        public int compareTo(Usuario OtroUsuario){ // ID
-            return Integer.compare(this.idUsuario,OtroUsuario.idUsuario);
-        } 
 
+        public static class PorMillasDisponibles implements Comparator<Usuario> // comparacion para el heap
+        {
+            @Override
+            public int compare(Usuario a, Usuario b) {
+                return Double.compare(a.millasDisponibles, b.millasDisponibles);
+            }
+        }
     }

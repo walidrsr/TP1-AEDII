@@ -45,7 +45,8 @@ public class Trie<T>
         }
         return valor;
     }
-public void agregar(String nombre, T valor)
+
+    public void agregar(String nombre, T valor)
     {
         int i = 0;
         TrieNodo nodoActual = root;
@@ -58,10 +59,11 @@ public void agregar(String nombre, T valor)
             i++;
             posicionEnArray = (int)nombre.charAt(i);
         }
-        nodoActual = nodoActual.hijos[posicionEnArray];
+
         //caso hay una promo que contiene el nombre de esta
         if(i == largoNombre -1)
         {
+            nodoActual = nodoActual.hijos[posicionEnArray];
             nodoActual.fin = true;
             nodoActual.valor = valor;
             nodoActual.cantidadHijos ++;
@@ -72,25 +74,57 @@ public void agregar(String nombre, T valor)
             String pal = nombre.substring(i+1);
             TrieNodo nodoFinal = guardarPalabra(nodoActual, pal);
             nodoFinal.fin = true;
-            nodoFinal.valor = valor;
-            nodoFinal.cantidadHijos ++;
+            nodoFinal.valor = valor;  
+            nodoFinal.cantidadHijos ++;      
         }
     }
 
     public TrieNodo guardarPalabra(TrieNodo nod, String pal)
-    {
+    {   
         TrieNodo nodoActual = nod;
 
-    
+        //recorre la palabra y a su vez el Trie
         for (int i = 0;i < pal.length(); i++)
         {
             TrieNodo nuevo = new TrieNodo();
             int posicionEnArray = (int)pal.charAt(i);
             nodoActual.hijos[posicionEnArray] = nuevo; 
-            nodoActual.cantidadHijos ++;
+            nodoActual.cantidadHijos ++;            
             nodoActual = nuevo;
         }
         //devuelve el nodo donde finaliza la palabra
         return nodoActual;
+    }
+
+    public void eliminar(String nombre)
+    {
+        TrieNodo nodoActual = root;
+        TrieNodo nodoPadre = root;
+        int posicionPadre = 0;
+        int i = 0;
+        int posicionEnArray = (int)nombre.charAt(i);
+        int largoNombre = nombre.length();
+        while (i < largoNombre - 1)
+        {
+            if (nodoActual.cantidadHijos > 1 || nodoActual.fin == true)
+            {
+                nodoPadre = nodoActual;
+                posicionPadre = posicionEnArray;
+            }
+            nodoActual = nodoActual.hijos[posicionEnArray];
+            i++;
+            posicionEnArray = (int)nombre.charAt(i);
+        }
+        nodoActual = nodoActual.hijos[posicionEnArray];
+        if(nodoActual.cantidadHijos == 0)
+        {
+            nodoPadre.hijos[posicionPadre] = null;
+            nodoPadre.cantidadHijos --;
+        }
+        else 
+        {
+            nodoActual.fin = false;
+            nodoActual.valor = null;
+        }
     }
 }

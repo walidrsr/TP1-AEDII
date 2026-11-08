@@ -5,7 +5,7 @@ public class promocion {
         double factor;
         double gastadas;
 
-        public void  promocion (double factorPromocion)
+        public promocion(double factorPromocion)
         {
             factor = factorPromocion;
             tope = 0;
