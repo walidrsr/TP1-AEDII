@@ -53,7 +53,8 @@ public class AirMiles implements SistemaAirMiles
     {
         Handle<Usuario> handle = usuarios.buscar(id); // O(log U)
         Usuario usuario = handle.valor();
-        // usuario.ganarMillasPorVuelo(distancia, promociones.buscar(nombrePromo).factor); arreglar esto
+        promocion promo  = promociones.buscar(nombrePromo);
+        usuario.ganarMillasPorVuelo(distancia, promo.factor); 
         handle.modificar(usuario);
         if (maxAcumulador.millasTotales < usuario.millasTotales)
             {
